@@ -46,13 +46,21 @@ Through this app, here are some functionalities :
 
 - Delete article: Only if user the is authenticated and it's an article which he created. A delete button appear in the bottom of the page which allow him to delete the current article. Admin user can delete any article of his choice.
 
+## Test Accounts
+
+|Email|Password| Role|
+|--|--|--|
+|gary.lewis@gmail.com|gary.lewis@gmail.com  |Admin|
+|angela.armstrong@gmail.com|angela.armstrong@gmail.com |Customer|
+|thomas.pettis@gmail.com|thomas.pettis@gmail.com  |Customer|
+
 ## Bugs/Next steps
 Functionnal side :
 - Fix image size in the home page (sizes should be identical).
 - Add loader on the login button and other buttons which trigger some process.
 - Add restriction on file format when uploading images to create a new article.
 - Display file name when importing an article image.
-- Fix issue when clicking on a new article (caused by the image).
+- Fix issue when clicking on a created article (caused by the image).
 - Fix article block size on the home page when adding or deleting articles
 
 Code side :
@@ -65,7 +73,7 @@ Code side :
 
 ## Authors
 
-[@BHocine21](https://www.github.com/octokatherine)
+[@BHocine21](https://github.com/BHocine21)
 
 [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/hocine-bouhlala-407025132/)
 
