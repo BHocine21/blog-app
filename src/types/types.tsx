@@ -1,27 +1,14 @@
-export enum ActionType {
-  FETCH_BOOKS = 'FETCH_BOOKS'
+export interface UserCredentials {
+  email: string,
+  password: string,
 }
 
-export interface Book {
+export interface Article {
   id: number,
-  url: string,
-  name: string,
-  isbn: string,
-  authors: string[],
-  numberOfPages: number,
-  publisher: string,
-  country: string,
-  mediaType: string,
-  released: string,
-  characters: string[],
+  title: string,
+  content: string,
+  author: string,
+  authorId: string,
+  publishedDate: string,
+  img: string,
 }
-export interface State {
-  books: Book[];
-}
-
-export interface fetchBooksAction {
-  type: ActionType.FETCH_BOOKS;
-  payload: Book[];
-}
-
-export type Action = fetchBooksAction;

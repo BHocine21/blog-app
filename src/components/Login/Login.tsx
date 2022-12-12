@@ -1,113 +1,86 @@
-import React, { useState } from 'react'
-import { useNavigate, Navigate } from "react-router-dom";
-
+import { useState } from 'react'
+import { useNavigate, Navigate } from 'react-router-dom'
 
 import authenticationService from 'services/authenticationService'
+import { validateEmail, validatePassword } from 'utils/validators'
 
 const Login = () => {
   const currentUser = localStorage.getItem('currentUser')
+  const navigate = useNavigate()
 
+  // Do not give access to authenticated user, redirect it to home instead.
   if(currentUser) {
-    return <Navigate to="/" />
+    return <Navigate to='/' />
   }
-  const navigate = useNavigate();
 
-  const [user, setUser] = useState({
+  // User credentials.
+  const [userCredentials, setUserCredentials] = useState({
     email: '',
     password: '',
   })
+
+  // Fields errors values.
   const [errors, setErrors] = useState({
     email: '',
     password: '',
   })
+
+  // Used to disable submit button.
   const [isSubmitting, setSubmitting] =useState(false)
+
+  // Used to display generic error message (if credentials are not valid).
   const [genericError, setGenericError] =useState({
     status: false,
     text: '',
   })
 
   const handleChange = (event: any) => {
-    setUser(prevState => ({
+    setUserCredentials(prevState => ({
       ...prevState,
       [event.target.name]: event.target.value
     }))
   }
 
-  const validateEmail = () => {
-    if (user.email.length === 0) {
-      return ({
-        isValid: false,
-        reason: 'Email is required'
-      })
-    }
-    else if (!user.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) {
-      return ({
-        isValid: false,
-        reason: 'Email is invalid'
-      })
-    }
-    else {
-      return ({
-        isValid: true,
-        reason: ''
-      })
-    }
-  }
-
-  const validatePassword = () => {
-    if (user.password.length === 0) {
-      return ({
-        isValid: false,
-        reason: 'Password is required'
-      })
-    }
-    else if (user.password.length < 7) {
-      return ({
-        isValid: false,
-        reason: 'Password too short'
-      })
-    }
-    else {
-      return ({
-        isValid: true,
-        reason: ''
-      })
-    }
-  }
-
   const handleSubmit = () => {
+    // Clear generic error.
     setGenericError({
       status: false,
       text: '',
-    });
-    const emailValidation = validateEmail()
-    const passwordValidation = validatePassword()
+    })
+    // Check if email and password are valid.
+    const emailValidation = validateEmail(userCredentials.email)
+    const passwordValidation = validatePassword(userCredentials.password)
+
+    // Display specific error when one of fields is not valid.
     if (!emailValidation.isValid || !passwordValidation.isValid) {
       setErrors({
         email: emailValidation.reason,
         password: passwordValidation.reason,
       })
     } else {
-      console.log(user.email + '  ' + user.password)
+      // Clear fields errors if exists.
       setErrors({
         email: '',
         password: '',
       })
-      setSubmitting(true);
-      authenticationService.login(user)
+      // Disable login button.
+      setSubmitting(true)
+      // Compute authentication process.
+      authenticationService.login(userCredentials)
       .then(
-          user => {
-            setSubmitting(false);
-            navigate('/');
+          () => {
+            setSubmitting(false)
+            navigate('/')
           },
           error => {
-            setSubmitting(false);
+            // Display generic error if credentials doesn't match any account.
+            setSubmitting(false)
             setGenericError({
               status: true,
               text: error,
-            });
+            })
           }
-      );
+      )
     }
   }
 
@@ -115,30 +88,24 @@ const Login = () => {
     <div className='d-flex justify-content-center align-items-center h-100'>
       <form className='col-6 mt-5'>
         <h1 className='text-center'>Log in</h1>
-        {genericError.status && <label className="form-label text-danger">{genericError.text} </label>}
-        <div className="form-outline mb-4">
-          <label className="form-label">Email address</label>
-          <input type="email" value={user.email} name= 'email' className="form-control" onChange={handleChange}/>
-          {errors.email.length > 0 && <label className="form-label text-danger">{errors.email}</label> }
+        {genericError.status && <label className='form-label text-danger'>{genericError.text} </label>}
+        <div className='form-outline mb-4'>
+          <label className='form-label'>Email address</label>
+          <input type='email' value={userCredentials.email} name= 'email' className='form-control' onChange={handleChange}/>
+          {errors.email.length > 0 && <label className='form-label text-danger'>{errors.email}</label> }
         </div>
-
-        <div className="form-outline mb-4">
-          <label className="form-label">Password</label>
-          <input type="password" value={user.password} name = 'password' className="form-control" onChange={handleChange}/>
-          {errors.password.length > 0 && <label className="form-label text-danger">{errors.password}</label>}
+        <div className='form-outline mb-4'>
+          <label className='form-label'>Password</label>
+          <input type='password' value={userCredentials.password} name = 'password' className='form-control' onChange={handleChange}/>
+          {errors.password.length > 0 && <label className='form-label text-danger'>{errors.password}</label>}
         </div>
-
-        <div className="form-group">
-          <button className="btn btn-success btn-block mb-4" type="button" disabled={isSubmitting} onClick={handleSubmit}>
-            {isSubmitting &&
-              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            }
-          Sign in
+        <div className='form-group'>
+          <button className='btn btn-success btn-block mb-4' type='button' disabled={isSubmitting} onClick={handleSubmit}>
+            Sign in
           </button>
         </div>
       </form>
     </div>
-
   )
 }
 
